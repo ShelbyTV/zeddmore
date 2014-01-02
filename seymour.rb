@@ -21,6 +21,11 @@ get '/' do
   end
 end
 
+get '/v1/actions' do
+  actions = ['inserted', 'viewed', 'watched', 'finished', 'liked', 'shared']
+  json({'status' => 'OK', 'actions' => actions})
+end
+
 # GET all the FRAMEs connected to a VIDEO
 # [ creating this route as an example of what can be done]
 get '/v1/video/:video_id/frames' do
