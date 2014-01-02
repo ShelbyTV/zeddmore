@@ -9,6 +9,8 @@ require "./lib/video_helper.rb"
 
 $redis = Redis.new
 
+WHITELISTED_ACTIONS = ['inserted', 'viewed', 'watched', 'finished', 'liked', 'shared']
+
 configure :development, :test do
   set :bind, '0.0.0.0'
 end
@@ -22,8 +24,7 @@ get '/' do
 end
 
 get '/v1/actions' do
-  actions = ['inserted', 'viewed', 'watched', 'finished', 'liked', 'shared']
-  json({'status' => 'OK', 'actions' => actions})
+  json({'status' => 'OK', 'actions' => WHITELISTED_ACTIONS})
 end
 
 # GET all the FRAMEs connected to a VIDEO
@@ -42,7 +43,7 @@ get '/v1/video/:video_id/:action' do
 end
 
 # POST to create an action for a video, frame, on behalf of a user
-post '/v1/video/:action' do
+post '/v1/video/:video_id/:action' do
   begin
     video_action = Seymour::Videos.add_user_to_video_action(params)
     json({'status' => 'OK', 'key' => video_action[:key], 'user_id' => video_action[:user_id]})
