@@ -40,6 +40,7 @@ namespace '/v1' do
   get '/video/:video_id' do
     funnel = Seymour::VideoHelper.get_funnel_for_a_video(params[:video_id])
     frames = Seymour::VideoHelper.get_frames_including_video(params[:video_id])
+    puts funnel
     json({'status' => "OK", 'video_id' => params[:video_id], 'actions' => funnel, 'frames' => frames})
   end
 

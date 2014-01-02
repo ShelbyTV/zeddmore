@@ -23,17 +23,21 @@ module Seymour
     def self.get_users_from_video_action(video_id, action)
       raise ArgumentError, "Must use a valid action, see /v1/action" unless WHITELISTED_ACTIONS.include? action
 
-      @users = []
+      users = []
       video_id_key = "v#{video_id}:f*:#{action}"
       video_keys = $redis.keys(video_id_key)
 
+      puts video_id_key
+
       video_keys.map do |key|
         user_set = $redis.smembers(key)
-        @users << user_set
+        users << user_set
       end
 
-      if @users.flatten!
-        return @users.uniq!
+      if !users.empty?
+        users.flatten!
+        users.uniq!
+        return users
       else
         return 0
       end
@@ -41,18 +45,18 @@ module Seymour
 
     # GET FRAMES FROM KEYS
     def self.get_frames_including_video(video_id)
-      @frames = []
+      frames = []
       key = "v#{video_id}:f*:*"
       keys = $redis.keys(key)
       keys.map do |k|
         if !k.split(':').empty?
           f = k.split(':')[1][1..-1]
-          @frames << f
+          frames << f
         end
       end
 
-      if !@frames.empty?
-        return @frames
+      if !frames.empty?
+        return frames
       else
         return 0
       end
@@ -60,10 +64,11 @@ module Seymour
 
     # GET USERS FROM SET FOR ALL ACTIONS
     def self.get_funnel_for_a_video(video_id)
-      funnel = {}
+      funnel = Hash.new
       WHITELISTED_ACTIONS.each do |a|
-        funnel[a.to_sym] = get_users_from_video_action(video_id, a)
+        funnel[a] = get_users_from_video_action(video_id, a)
       end
+      puts funnel
       return funnel
     end
 
