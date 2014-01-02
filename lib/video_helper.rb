@@ -27,8 +27,6 @@ module Seymour
       video_id_key = "v#{video_id}:f*:#{action}"
       video_keys = $redis.keys(video_id_key)
 
-      puts video_id_key
-
       video_keys.map do |key|
         user_set = $redis.smembers(key)
         users << user_set
@@ -68,7 +66,6 @@ module Seymour
       WHITELISTED_ACTIONS.each do |a|
         funnel[a] = get_users_from_video_action(video_id, a)
       end
-      puts funnel
       return funnel
     end
 
