@@ -4,6 +4,11 @@ require 'sinatra/json'
 require 'multi_json'
 require 'redis'
 
+require "./lib/video_helper.rb"
+
+
+$redis = Redis.new
+
 configure :development, :test do
   set :bind, '0.0.0.0'
 end
@@ -16,49 +21,28 @@ get '/' do
   end
 end
 
-# get '/v1/' do
-#   redis = Redis.new
+# GET all the FRAMEs connected to a VIDEO
+# [ creating this route as an example of what can be done]
+get '/v1/video/:video_id/frames' do
+  frames = Seymour::Videos.get_frames_including_video(params[:video_id])
+  json({'status' => "OK", 'frames' => frames})
+end
 
-#   feed_keys = redis.keys(params[:type] ? "#{params[:type]}:*" : '*')
-#   feeds = feed_keys.map do |key|
+# GET all the USERs who performed an action on a VIDEO
+# [ can * is a valid action type, would return all users who "interacted" somehow with video ]
+# [ in the future this can incude multiple actions perhaps]
+get '/v1/video/:video_id/:action' do
+  users = Seymour::Videos.get_users_from_video_action(params[:video_id], params[:action])
+  json({'status' => "OK", 'users' => users})
+end
 
-#     if redis.type(key) != 'hash'
-#       # ignore keys with non-hash values
-#     else
-#       feed = redis.hgetall(key)
-#       # the public interface doesn't need "shelby_" as the prefix on the names of the keys
-#       feed.keys.each do |k|
-#         if k.start_with?('shelby_')
-#           feed[k[7..-1]] = feed.delete(k)
-#         end
-#       end
-#       feed["id"] = key
-#       feed
-#     end
-
-#   end
-#   feeds.compact!
-
-#   json feeds
-# end
-
-post '/v1/' do
-  redis = Redis.new
-
-  @action = params[:action]
-  @data = @params[:data]
-
-  if @action and @data
-    key = "v#{@data['video_id']}:f#{@data['frame_id']}:#{@action}"
-    if redis.exists id
-      # return an error if the key already exists
-      422
-    else
-      # otherwise, save the feed info and return
-      redis.mapped_hmset id, {'shelby_auth_token' => params[:auth_token], 'shelby_roll_id' => params[:roll_id]}
-      json({'id' => id, 'auth_token' => params[:auth_token], 'roll_id' => params[:roll_id]})
-    end
-  else
-    422
+# POST to create an action for a video, frame, on behalf of a user
+post '/v1/video/:action' do
+  begin
+    video_action = Seymour::Videos.add_user_to_video_action(params)
+    json({'status' => 'OK', 'key' => video_action[:key], 'user_id' => video_action[:user_id]})
+  rescue => e
+    json({'status' => 'ERROR', 'msg' => e})
   end
+
 end

@@ -18,6 +18,7 @@ group :development,:test do
   gem 'rspec-redis_helper'
   gem 'thin'
   gem 'capistrano-unicorn', :require => false
+  gem 'shotgun'
 end
 
 group :production do
