@@ -32,11 +32,7 @@ namespace '/v1' do
   # [ creating this route as an example of what can be done]
   get '/video/:video_id/frames' do
     frames = Seymour::VideoHelper.get_frames_including_video(params[:video_id])
-    if frames.is_a?(Hash) and frames['status'] == "ERROR"
-      json(frames)
-    else
-      json({'status' => "OK", 'frames' => frames})
-    end
+    json({'status' => "OK", 'frames' => frames})
   end
 
   # GET all the USERs for each step of the whitelisted funnel for a VIDEO
@@ -53,11 +49,7 @@ namespace '/v1' do
   get '/video/:video_id/:action' do
     begin
       users = Seymour::VideoHelper.get_users_from_video_action(params[:video_id], params[:action])
-      if users.is_a?(Hash) and users['status'] == "ERROR"
-        json(users)
-      else
-        json({'status' => "OK", 'users' => users})
-      end
+      json({'status' => "OK", 'users' => users})
     rescue => e
       json({'status' => "ERROR", 'message' => e})
     end

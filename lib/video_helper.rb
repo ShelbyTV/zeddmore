@@ -13,11 +13,9 @@ module Seymour
       raise ArgumentError, "Must include a valid action, see /v1/action" unless WHITELISTED_ACTIONS.include? action
 
       key = "v#{video_id}:f#{frame_id}:#{action}"
-      if $redis.sadd key, user_id
-        return {:key => key, :user_id => user_id}
-      else
-        return nil
-      end
+
+      $redis.sadd(key, user_id)
+      return {:key => key, :user_id => user_id}
 
     end
 
@@ -28,8 +26,6 @@ module Seymour
       @users = []
       video_id_key = "v#{video_id}:f*:#{action}"
       video_keys = $redis.keys(video_id_key)
-
-      return {'status' => 'ERROR', 'message' => "Video not found"} if @video_keys.nil?
 
       video_keys.map do |key|
         user_set = $redis.smembers(key)
@@ -58,7 +54,7 @@ module Seymour
       if !@frames.empty?
         return @frames
       else
-        return {'status' => 'ERROR', 'message' => "No frames found"}
+        return 0
       end
     end
 
