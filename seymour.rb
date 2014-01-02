@@ -34,12 +34,24 @@ get '/v1/video/:video_id/frames' do
   json({'status' => "OK", 'frames' => frames})
 end
 
+# GET all the USERs for each step of the whitelisted funnel for a VIDEO
+# [ creating this route as an example of what can be done]
+get '/v1/video/:video_id/funnel' do
+  funnel = Seymour::Videos.get_funnel_for_a_video(params[:video_id])
+  json({'status' => "OK", 'funnel' => funnel})
+end
+
 # GET all the USERs who performed an action on a VIDEO
 # [ can * is a valid action type, would return all users who "interacted" somehow with video ]
 # [ in the future this can incude multiple actions perhaps]
 get '/v1/video/:video_id/:action' do
-  users = Seymour::Videos.get_users_from_video_action(params[:video_id], params[:action])
-  json({'status' => "OK", 'users' => users})
+  begin
+    users = Seymour::Videos.get_users_from_video_action(params[:video_id], params[:action])
+    json({'status' => "OK", 'users' => users})
+  rescue => e
+    json({'status' => "ERROR", 'message' => e})
+  end
+
 end
 
 # POST to create an action for a video, frame, on behalf of a user
