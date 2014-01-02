@@ -37,9 +37,10 @@ namespace '/v1' do
 
   # GET all the USERs for each step of the whitelisted funnel for a VIDEO
   # [ creating this route as an example of what can be done]
-  get '/video/:video_id/funnel' do
+  get '/video/:video_id' do
     funnel = Seymour::Videos.get_funnel_for_a_video(params[:video_id])
-    json({'status' => "OK", 'funnel' => funnel})
+    frames = Seymour::Videos.get_frames_including_video(params[:video_id])
+    json({'status' => "OK", 'video_id' => params[:video_id], 'actions' => funnel, 'frames' => frames})
   end
 
   # GET all the USERs who performed an action on a VIDEO
