@@ -1,5 +1,5 @@
 module Seymour
-  class Videos
+  class VideoHelper
 
     WHITELISTED_ACTIONS = ['inserted', 'viewed', 'watched', 'finished', 'liked', 'shared']
 
@@ -28,6 +28,9 @@ module Seymour
       @users = []
       video_id_key = "v#{video_id}:f*:#{action}"
       video_keys = $redis.keys(video_id_key)
+
+      return {'status' => 'ERROR', 'message' => "Video not found"} if @video_keys.nil?
+
       video_keys.map do |key|
         user_set = $redis.smembers(key)
         @users << user_set
@@ -55,7 +58,7 @@ module Seymour
       if !@frames.empty?
         return @frames
       else
-        return 0
+        return {'status' => 'ERROR', 'message' => "No frames found"}
       end
     end
 
