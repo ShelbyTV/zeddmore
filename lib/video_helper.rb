@@ -1,6 +1,8 @@
 module Seymour
   class Videos
 
+    WHITELISTED_ACTIONS = ['inserted', 'viewed', 'watched', 'finished', 'liked', 'shared']
+
     # ADD USER TO SET
     def self.add_user_to_video_action(options)
       raise ArgumentError, "Must include video_id" unless video_id = options[:video_id]
