@@ -9,13 +9,14 @@ module Zeddmore
     ####
 
     # ADD Video Popularity TO SET
-    def self.add_video_to_set(video_id, interval)
+    def self.add_video_to_set(video_id, interval, video_data)
       raise ArgumentError, "Must include key" unless video_id.is_a? String
       raise ArgumentError, "Must include an approved interval (day, week)" unless ["day", "week"].include? interval
+      raise ArgumentError, "Must include key" unless video_data.is_a? Hash
 
-      key = "Zeddmore:#{Date.today.to_s}:#{inverval}:#{video_id}"
-      $redis.mapped_hmset(key, options)
-      return {:key => key, :video => options}
+      key = "Zeddmore:#{Date.today.to_s}:#{interval}:#{video_id}"
+      $redis.mapped_hmset(key, video_data)
+      return {:key => key, :video => video_data}
     end
 
     # GET A DAILY SET OF VIDEOS
@@ -23,7 +24,7 @@ module Zeddmore
       raise ArgumentError, "Must include a date" unless date
       raise ArgumentError, "Must include an approved interval (day, week)" unless ["day", "week"].include? interval
 
-      interval_key = "#{date}:#{inverval}:*"
+      interval_key = "Zeddmore:#{date}:#{interval}:*"
       video_keys = $redis.keys(interval_key)
 
       videos = []
@@ -34,9 +35,10 @@ module Zeddmore
       if !videos.empty?
         videos.flatten!
         videos.uniq!
-        return {"status" => "OK", 'videos' => videos}
+        videos.sort_by { |v| v[:count] }
+        return videos
       else
-        return {"status" => 'error', 'msg' => "no videos found"}
+        return {'msg' => "no videos found"}
       end
     end
 
