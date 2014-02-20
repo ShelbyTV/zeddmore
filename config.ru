@@ -1,3 +1,3 @@
-require './seymour'
+require './zeddmore'
 
 run Sinatra::Application
