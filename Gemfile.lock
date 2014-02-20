@@ -64,7 +64,7 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     tilt (1.4.1)
-    unicorn (4.8.2)
+    unicorn (4.6.2)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
@@ -87,4 +87,4 @@ DEPENDENCIES
   sinatra (= 1.4.2)
   sinatra-contrib (= 1.4.0)
   thin
-  unicorn (= 4.8.2)
+  unicorn (= 4.6.2)
