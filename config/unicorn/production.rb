@@ -1,11 +1,11 @@
 # Set your full path to application.
-app_path = "/home/gt/seymour/current"
+app_path = "/home/gt/zeddmore/current"
 
 # Set unicorn options
 worker_processes 4
 preload_app true
 timeout 30
-listen "/tmp/seymour.socket", :backlog => 64
+listen "/tmp/zeddmore.socket", :backlog => 64
 # listen 8080, :tcp_nopush => true
 
 # Spawn unicorn master worker for user apps (group: apps)
@@ -22,7 +22,7 @@ stderr_path "#{app_path}/log/unicorn.log"
 stdout_path "#{app_path}/log/unicorn.log"
 
 # Set master PID location
-pid "/home/gt/seymour/shared/pids/unicorn.pid"
+pid "/home/gt/zeddmore/shared/pids/unicorn.pid"
 
 before_fork do |server, worker|
   old_pid = "#{server.config[:pid]}.oldbin"

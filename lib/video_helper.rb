@@ -4,15 +4,16 @@ module Zeddmore
     ####
     #
     #  key is in format:
-    #   #{Date.today.to_s}:#{inverval}:#{video_id}"
+    #   "Zeddmore:#{Date.today.to_s}:#{inverval}:#{video_id}"
     #
     ####
 
     # ADD Video Popularity TO SET
-    def self.add_video_to_set(options)
-      raise ArgumentError, "Must include key" unless key = options.delete(:key)
+    def self.add_video_to_set(video_id, interval)
+      raise ArgumentError, "Must include key" unless video_id.is_a? String
+      raise ArgumentError, "Must include an approved interval (day, week)" unless ["day", "week"].include? interval
 
-      key = "Zeddmore:"+key
+      key = "Zeddmore:#{Date.today.to_s}:#{inverval}:#{video_id}"
       $redis.mapped_hmset(key, options)
       return {:key => key, :video => options}
     end

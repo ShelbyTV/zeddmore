@@ -10,7 +10,7 @@ require "./lib/video_helper.rb"
 
 
 $redis = Redis.new
-WHITELISTED_ROUTES = ['GET /videos/:interval/:date', 'POST /video/:interval/:date']
+WHITELISTED_ROUTES = ['GET /videos/:interval/:video_id', 'POST /video/:interval/:video_id']
 
 configure :development, :test do
   set :bind, '0.0.0.0'
@@ -30,17 +30,17 @@ namespace '/v1' do
   end
 
   # GET all the VIDEOs for a given date and interval
-  get '/videos/:interval/:date' do
-    videos = Zeddmore::VideoHelper.get_set_of_videos(params[:date], params[:interval])
+  get '/videos/:video_id/:interval' do
+    videos = Zeddmore::VideoHelper.get_set_of_videos(params[:video_id], params[:interval])
     json({'status' => "OK", 'videos' => videos})
   end
 
 
   # POST to create an action for a video, frame, on behalf of a user
-  post '/video/:interval/:date' do
+  post '/video/:video_id/:interval' do
     begin
-      video_action = Zeddmore::VideoHelper.add_user_to_video_action(params)
-      json({'status' => 'OK', 'key' => video_action[:key], 'user_id' => video_action[:user_id]})
+      video = Zeddmore::VideoHelper.add_video_to_set(params[:video_id], params[:interval])
+      json({'status' => 'OK', 'key' => video[:key], 'video' => video[:video]})
     rescue => e
       json({'status' => 'ERROR', 'msg' => e})
     end

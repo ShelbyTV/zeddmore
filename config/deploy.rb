@@ -1,8 +1,8 @@
 require "bundler/capistrano"
 
-set :application, "seymour"
+set :application, "zeddmore"
 set :user, "gt"
-set :deploy_to, "/home/gt/seymour"
+set :deploy_to, "/home/gt/zeddmore"
 
 default_run_options[:pty] = true
 
@@ -22,7 +22,7 @@ require 'capistrano-unicorn'
 role :web, "198.101.158.13"
 role :app, "198.101.158.13"
 
-set :repository,  "git@github.com:ShelbyTV/seymour.git"
+set :repository,  "git@github.com:ShelbyTV/zeddmore.git"
 set :branch, "master"
 set :rails_env, "production"
 set :unicorn_env, "production"
