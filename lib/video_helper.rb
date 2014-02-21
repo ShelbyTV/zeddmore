@@ -35,8 +35,7 @@ module Zeddmore
       if !videos.empty?
         videos.flatten!
         videos.uniq!
-        videos.sort_by! { |v| v['count'] }
-        videos.reverse!
+        videos = videos.sort_by! { |v| v['count'] }
         return videos
       else
         return {'msg' => "no videos found"}
