@@ -36,6 +36,7 @@ module Zeddmore
         videos.flatten!
         videos.uniq!
         videos = videos.sort_by! { |v| v['count'].to_i }
+        videos.reverse!
         return videos
       else
         return {'msg' => "no videos found"}
