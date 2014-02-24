@@ -51,7 +51,7 @@ module Zeddmore
       # popularity for most recent day
       y2 = $redis.hget("Zeddmore:#{date}:#{interval}:#{video_id}", "count")
       # pageviews for previous day
-      y1 = $redis.hget("Zeddmore:#{(date_minus_one}:#{interval}:#{video_id}", "count")
+      y1 = $redis.hget("Zeddmore:#{date_minus_one}:#{interval}:#{video_id}", "count")
       # Simple baseline trend algorithm
       if y1 and y2
         slope = y2.to_i - y1.to_i
