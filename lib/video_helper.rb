@@ -1,8 +1,6 @@
 module Zeddmore
   class VideoHelper
 
-    register Sinatra::DateForms
-
     ####
     #
     #  key is in format:
@@ -41,8 +39,7 @@ module Zeddmore
         videos.each {|v| total_popularity_count += v["count"].to_i }
         videos.each do |v|
           v["count_as_ratio"] = (v['count'].to_f / total_popularity_count.to_f).round(3)
-          v["trend"] = get_trend(date, interval, v["video_id"], total_popularity_count)
-          v["trend_error"] = get_trend(date, interval, v["video_id"], total_popularity_count)
+          #v["trend"], v["trend_error"] = get_trend(date, interval, v["video_id"], total_popularity_count)
         end
 
         sort_by_attr = opts[:sort_by] ? opts[:sort_by] : 'count'
