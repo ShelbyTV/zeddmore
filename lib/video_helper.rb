@@ -62,7 +62,7 @@ module Zeddmore
       if y1 and y2
         slope = y2.to_i - y1.to_i
         trend = slope  * Math.log(1.0 + total_popularity_count)
-        error = 1.0/Math.sqrt(total_pageviews)
+        error = 1.0/Math.sqrt(total_popularity_count)
         return trend, error
       else
         return "error finding one datum"
