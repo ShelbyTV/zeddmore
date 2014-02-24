@@ -20,7 +20,7 @@ module Zeddmore
     end
 
     # GET A DAILY SET OF VIDEOS
-    def self.get_set_of_videos(date, interval)
+    def self.get_set_of_videos(date, interval, opts={})
       raise ArgumentError, "Must include a date" unless date
       raise ArgumentError, "Must include an approved interval (day, week)" unless ["day", "week"].include? interval
 
@@ -36,10 +36,17 @@ module Zeddmore
       if !videos.empty?
         videos.flatten!
         videos.uniq!
-        videos = videos.sort_by! { |v| v['count'].to_i }
-        videos.reverse!
         videos.each {|v| total_popularity_count += v["count"].to_i }
-        videos.each {|v| v["count_as_ratio"] = (v['count'].to_f / total_popularity_count.to_f).round(3) }
+        videos.each do |v|
+          v["count_as_ratio"] = (v['count'].to_f / total_popularity_count.to_f).round(3)
+          v["trend"] = get_trend(date, interval, v["video_id"], total_popularity_count)
+          v["trend_error"] = get_trend(date, interval, v["video_id"], total_popularity_count)
+        end
+
+        sort_by_attr = opts[:sort_by] ? opts[:sort_by] : 'count'
+        videos = videos.sort_by! { |v| v[sort_by_attr].to_i }
+        videos.reverse!
+
         return videos
       else
         return {'msg' => "no videos found"}
