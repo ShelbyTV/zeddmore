@@ -1,6 +1,8 @@
 module Zeddmore
   class VideoHelper
 
+    register Sinatra::DateForms
+
     ####
     #
     #  key is in format:
