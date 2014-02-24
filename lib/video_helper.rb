@@ -33,14 +33,13 @@ module Zeddmore
         videos << $redis.hgetall(key)
       end
 
-      videos.each {|v| total_popularity_count += v["count"].to_i }
-      videos.each {|v| v["count_as_ratio"] = (v['count'].to_f / total_popularity_count.to_f).round(3) }
-
       if !videos.empty?
         videos.flatten!
         videos.uniq!
         videos = videos.sort_by! { |v| v['count'].to_i }
         videos.reverse!
+        videos.each {|v| total_popularity_count += v["count"].to_i }
+        videos.each {|v| v["count_as_ratio"] = (v['count'].to_f / total_popularity_count.to_f).round(3) }
         return videos
       else
         return {'msg' => "no videos found"}
