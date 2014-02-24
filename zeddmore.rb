@@ -5,6 +5,7 @@ require "sinatra/namespace"
 require "sinatra/reloader" if development?
 require 'multi_json'
 require 'redis'
+require 'active_support/core_ext'
 
 require "./lib/video_helper.rb"
 
