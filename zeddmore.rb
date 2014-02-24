@@ -32,8 +32,9 @@ namespace '/v1' do
 
   # GET all the VIDEOs for a given date and interval
   get '/videos/:date/:interval' do
-    puts "#{params[:date]} :: #{params[:interval]}"
-    videos = Zeddmore::VideoHelper.get_set_of_videos(params[:date], params[:interval])
+    opts = {}
+    opts[:sort_by] = params[:sort_by] if params[:sort_by]
+    videos = Zeddmore::VideoHelper.get_set_of_videos(params[:date], params[:interval], opts)
     json({'status' => "OK", 'videos' => videos})
   end
 
