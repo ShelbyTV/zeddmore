@@ -3,6 +3,7 @@ require 'sinatra'
 require 'sinatra/json'
 require "sinatra/namespace"
 require "sinatra/reloader" if development?
+require 'sinatra_more'
 require 'multi_json'
 require 'redis'
 
