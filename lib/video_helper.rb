@@ -28,9 +28,13 @@ module Zeddmore
       video_keys = $redis.keys(interval_key)
 
       videos = []
+      total_popularity_count = 0
       video_keys.map do |key|
         videos << $redis.hgetall(key)
       end
+
+      videos.each {|v| total_popularity_count += v["count"].to_i }
+      videos.each {|v| v["count_as_ratio"] = (v['count'].to_f / total_popularity_count.to_f).round(3) }
 
       if !videos.empty?
         videos.flatten!
@@ -40,6 +44,23 @@ module Zeddmore
         return videos
       else
         return {'msg' => "no videos found"}
+      end
+    end
+
+    def self.get_trend(date, interval, video_id, total_popularity_count)
+      date_minus_one = (Date.parse(date) -1.day).to_s
+      # popularity for most recent day
+      y2 = $redis.hget("Zeddmore:#{date}:#{interval}:#{video_id}", "count")
+      # pageviews for previous day
+      y1 = $redis.hget("Zeddmore:#{(date_minus_one}:#{interval}:#{video_id}", "count")
+      # Simple baseline trend algorithm
+      if y1 and y2
+        slope = y2.to_i - y1.to_i
+        trend = slope  * Math.log(1.0 + total_popularity_count)
+        error = 1.0/Math.sqrt(total_pageviews)
+        return trend, error
+      else
+        return "error finding one datum"
       end
     end
 
