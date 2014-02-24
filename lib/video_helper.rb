@@ -65,7 +65,7 @@ module Zeddmore
         error = 1.0/Math.sqrt(total_popularity_count)
         return trend, error
       else
-        return "error finding one datum"
+        return nil, nil
       end
     end
 
