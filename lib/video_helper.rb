@@ -69,5 +69,19 @@ module Zeddmore
       end
     end
 
+    def self.update_all_video_records
+      interval_key = "Zeddmore:*" # all videos
+      video_keys = $redis.keys(interval_key)
+
+      video_keys.map do |key|
+        video_id = $redis.hget(key, "video_id")
+        r = HTTParty.get("http://api.shelby.tv/v1/video/#{video_id}")
+        if r['status'] == 200
+          video = r['result']
+          $redis.hmset(key, 'provider_name', video['provider_name'], 'provider_id', video['provider_id'])
+        end
+      end
+    end
+
   end
 end
